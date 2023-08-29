@@ -1,6 +1,6 @@
 package com.plantplus.plantplus.service;
 
-import com.plantplus.plantplus.dto.PlantPhotoHealthResDto;
+import com.plantplus.plantplus.dto.plantPhoto.PlantPhotoHealthResDto;
 
 import java.util.*;
 

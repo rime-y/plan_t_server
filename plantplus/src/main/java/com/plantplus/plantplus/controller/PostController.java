@@ -1,14 +1,11 @@
 package com.plantplus.plantplus.controller;
 
-import com.plantplus.plantplus.dto.PlantPhotoHealthResDto;
-import com.plantplus.plantplus.dto.PlantPhotoPostDto;
-import com.plantplus.plantplus.dto.PlantPhotoResDto;
+import com.plantplus.plantplus.dto.plantPhoto.PlantPhotoHealthResDto;
+import com.plantplus.plantplus.dto.plantPhoto.PlantPhotoPostDto;
+import com.plantplus.plantplus.dto.plantPhoto.PlantPhotoResDto;
 import com.plantplus.plantplus.service.WebClientService;
 import com.plantplus.plantplus.service.PlantService;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

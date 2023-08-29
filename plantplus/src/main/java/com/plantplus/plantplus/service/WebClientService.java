@@ -1,19 +1,15 @@
 package com.plantplus.plantplus.service;
 
 import com.plantplus.plantplus.dto.*;
-import lombok.extern.java.Log;
+import com.plantplus.plantplus.dto.plantPhoto.*;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +18,12 @@ import java.util.List;
 @Service
 @Slf4j
 public class WebClientService {
+    @Value("${plantId.api.key}")
+    private String plantIdApiKey;
+
+    @Value("${nongsaro.api.key}")
+    private String nongsaroApiKey;
+
     public String getTest() {
         WebClient webClient = WebClient.builder()
                 .baseUrl("https://jsonplaceholder.typicode.com")
@@ -94,7 +96,7 @@ public class WebClientService {
                 .uri(uriBuilder -> uriBuilder.path("/ID")
                         .build())
                 .bodyValue(plantIdDto)
-                .header("Api-Key", "g96Bu9v9NJxcJGCwuCfGKBAOo81N7cFlPBDG1RltDniX0mdwBa")
+                .header("Api-Key", plantIdApiKey)
                 .retrieve()
                 .toEntity(PlantIdDto.class)
                 .block();
@@ -115,7 +117,7 @@ public class WebClientService {
                 .uri(uriBuilder -> uriBuilder.path("/multiple")
                         .build())
                 .bodyValue(plantIdDto)
-                .header("Api-Key", "g96Bu9v9NJxcJGCwuCfGKBAOo81N7cFlPBDG1RltDniX0mdwBa")
+                .header("Api-Key", plantIdApiKey)
                 .retrieve()
                 .toEntity(PlantIdDto.class)
                 .block();
@@ -135,7 +137,7 @@ public class WebClientService {
                 .uri(uriBuilder -> uriBuilder.path("/usage_info")
                         .build())
                 .bodyValue(plantIdDto)
-                .header("Api-Key", "g96Bu9v9NJxcJGCwuCfGKBAOo81N7cFlPBDG1RltDniX0mdwBa")
+                .header("Api-Key", plantIdApiKey)
                 .retrieve()
                 .toEntity(PlantIdDto.class)
                 .block();
@@ -161,7 +163,7 @@ public class WebClientService {
                     .uri(uriBuilder -> uriBuilder.path("/identify")
                             .build())
                     .bodyValue(plantPhotoDto)
-                    .header("Api-Key", "g96Bu9v9NJxcJGCwuCfGKBAOo81N7cFlPBDG1RltDniX0mdwBa")
+                    .header("Api-Key", plantIdApiKey)
                     .retrieve()
                     .toEntity(PlantPhotoResDto.class)
                     .block();
@@ -211,7 +213,7 @@ public class WebClientService {
                     .uri(uriBuilder -> uriBuilder.path("/health_assessment")
                             .build())
                     .bodyValue(plantPhotoDto)
-                    .header("Api-Key", "g96Bu9v9NJxcJGCwuCfGKBAOo81N7cFlPBDG1RltDniX0mdwBa")
+                    .header("Api-Key", plantIdApiKey)
                     .retrieve()
                     .toEntity(PlantPhotoHealthResDto.class)
                     .block();
@@ -251,7 +253,7 @@ public class WebClientService {
                     .uri(uriBuilder -> uriBuilder.path("/health_assessment")
                             .build())
                     .bodyValue(plantPhotoDto)
-                    .header("Api-Key", "g96Bu9v9NJxcJGCwuCfGKBAOo81N7cFlPBDG1RltDniX0mdwBa")
+                    .header("Api-Key", plantIdApiKey)
                     .retrieve()
                     .toEntity(PlantPhotoResTestDto.class)
                     .block();
@@ -279,17 +281,18 @@ public class WebClientService {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8")
                 .defaultHeaders(headers -> {
                     headers.set("Accept-Charset", "UTF-8");
-                    headers.set("apiKey", "20230621EUCNSZX5U0MEDLFWQCVFA");
+                    headers.set("apiKey", nongsaroApiKey);
                 })
                 .build();
 
 
         ResponseEntity<String> res = null;
 
+
         try {
             res = webClient.get()
                     .uri(uriBuilder -> uriBuilder.path("/gardenList")
-                            .queryParam("apiKey", "20230621EUCNSZX5U0MEDLFWQCVFA")
+                            .queryParam("apiKey", nongsaroApiKey)
                             .queryParam("sType", "sPlntbneNm")  // 영명
                             .queryParam("sText", plantName)
                             .build())
@@ -320,7 +323,7 @@ public class WebClientService {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8")
                 .defaultHeaders(headers -> {
                     headers.set("Accept-Charset", "UTF-8");
-                    headers.set("apiKey", "20230621EUCNSZX5U0MEDLFWQCVFA");
+                    headers.set("apiKey", nongsaroApiKey);
                 })
                 .build();
 
@@ -330,7 +333,7 @@ public class WebClientService {
         try {
             res = webClient.get()
                     .uri(uriBuilder -> uriBuilder.path("/gardenDtl")
-                            .queryParam("apiKey", "20230621EUCNSZX5U0MEDLFWQCVFA")
+                            .queryParam("apiKey", nongsaroApiKey)
                             .queryParam("cntntsNo", plantNum)
                             .build())
                     .retrieve()

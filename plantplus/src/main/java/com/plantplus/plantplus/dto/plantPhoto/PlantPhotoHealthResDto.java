@@ -1,4 +1,4 @@
-package com.plantplus.plantplus.dto;
+package com.plantplus.plantplus.dto.plantPhoto;
 
 import java.util.List;
 

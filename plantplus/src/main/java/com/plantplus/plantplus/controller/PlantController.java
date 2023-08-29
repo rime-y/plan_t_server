@@ -1,14 +1,17 @@
 package com.plantplus.plantplus.controller;
 
-import com.plantplus.plantplus.dto.PlantPhotoHealthResDto;
-import com.plantplus.plantplus.dto.PlantPhotoPostDto;
-import com.plantplus.plantplus.dto.PlantPhotoResDto;
+import com.plantplus.plantplus.dto.plantUser.UserDto;
+import com.plantplus.plantplus.dto.plantUser.UserPlantAddDto;
+import com.plantplus.plantplus.dto.plantUser.UserPlantDto;
+import com.plantplus.plantplus.dto.plantEnv.PlantEnvPostDto;
+import com.plantplus.plantplus.dto.plantPhoto.PlantPhotoHealthResDto;
+import com.plantplus.plantplus.dto.plantPhoto.PlantPhotoPostDto;
+import com.plantplus.plantplus.dto.plantPhoto.PlantPhotoResDto;
+import com.plantplus.plantplus.dto.plantSearch.PlantSearchDto;
+import com.plantplus.plantplus.service.FirebaseService;
 import com.plantplus.plantplus.service.WebClientService;
 import com.plantplus.plantplus.service.PlantService;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +52,6 @@ public class PlantController {
         // 첫번째 suggestion의 결과를 택한다
         List<PlantPhotoResDto.PlantSuggestions> plantSuggestionsList = res.getBody().getSuggestions();
         String plantRes = "";
-        String plantInfo = "";
         Map<String, String> plantInfoMap = new HashMap<>();
         Map<String, String> plantInfoResMap = new HashMap<>();
 
@@ -90,7 +92,6 @@ public class PlantController {
     public Map<String, String> getPlantHealth(@RequestBody PlantPhotoPostDto plantPhotoDto){
         // 사진 업로드하면, 종류를 판별하고 건강 상태를 돌려줌
         List<String> images = new ArrayList<>();
-        String resString = "";
         images.add(plantPhotoDto.getImages());
         log.error("test");
         log.info("plantPhotoPostDto", images, plantPhotoDto.getImages().toString());
@@ -101,7 +102,6 @@ public class PlantController {
         // 첫번째 suggestion의 결과를 택한다
         List<PlantPhotoResDto.PlantSuggestions> plantSuggestionsList = resName.getBody().getSuggestions();
         String plantRes = "";
-        String plantInfo = "";
         Map<String, String> plantInfoMap = new HashMap<>();
         Map<String, String> plantInfoResMap = new HashMap<>();
 
@@ -141,6 +141,176 @@ public class PlantController {
 
 
         return plantInfoResMap;
+    }
+
+    /**
+     * 환경 정보 분석 및 세부 정보 제공
+     * @param plantEnvPostDto
+     * @return
+     */
+    // http://localhost:8080/api/v1/plant-api/getEnvInfo
+    @PostMapping(value="/getEnvInfo")
+    public Map<String, String> getEnvInfo(@RequestBody PlantEnvPostDto plantEnvPostDto){
+        // 조도 정보를 보내면, 분석하여 돌려줌
+
+        Map<String, String> plantInfoResMap = new HashMap<>();
+
+        return plantInfoResMap;
+    }
+
+    /**
+     * 식물 검색 및 세부 정보 제공
+     * @param plantSearchDto
+     * @return
+     */
+    // http://localhost:8080/api/v1/plant-api/getPlantSearch
+    @PostMapping(value="/getPlantSearch")
+    public Map<String, String> getPlantSearch(@RequestBody PlantSearchDto plantSearchDto){
+
+        String plantRes = plantSearchDto.getPlantName();
+        Map<String, String> plantInfoMap = new HashMap<>();
+        Map<String, String> plantInfoResMap = new HashMap<>();
+
+        if (plantRes != null ){
+            // 세부정보 받아오기
+            System.out.println("plantRes: "+plantRes);
+            plantInfoMap = plantService.getPlantInfo(plantRes, webClientService);
+        } else {
+            log.info("plantRes null");
+        }
+
+        if (!plantInfoMap.isEmpty()){
+            // 정리
+            plantInfoResMap = plantService.orgPlantInfoMap(plantInfoMap);
+            System.out.println("plantInfoResMap "+plantInfoResMap.get("plantName"));
+            List<String> plantInfoResStr = plantService.orgPlantInfoString(plantInfoMap);
+            plantInfoResMap.put("설명", plantInfoResStr.get(0));
+        } else {
+            System.out.println("plantInfoResMap Empty");
+        }
+
+
+        return plantInfoResMap;
+    }
+
+
+    /**
+     * 나의 식물 추가
+     */
+    // http://localhost:8080/api/v1/plant-api/createMyPlant
+    @PostMapping(value="/createMyPlant")
+    public Map<String, String> createMyPlant(@RequestBody UserPlantAddDto userPlantAddDto) {
+        Map<String, String> resultMap = new HashMap<>();
+
+        FirebaseService firebaseService = new FirebaseService();
+
+        try {
+            if (userPlantAddDto.getUserId() == null){
+                resultMap.put("error", "no UserId");
+                return resultMap;
+            }
+            if (userPlantAddDto.getId() == null){
+                // 부여된 식물 id가 없으면 임의로 부여
+                resultMap.put("error", "no plantId");
+                userPlantAddDto.setId(Long.toString(System.currentTimeMillis()));
+            }
+            UserPlantDto userPlantDto = new UserPlantDto();
+            userPlantDto.setId(userPlantAddDto.getId());
+            userPlantDto.setName(userPlantAddDto.getName());
+            userPlantDto.setMemo(userPlantAddDto.getMemo());
+            String res = firebaseService.insertPlant(userPlantAddDto.getUserId(), userPlantDto);
+            resultMap.put("result", "success");
+            resultMap.put("detail", res);
+        } catch (Exception ex) {
+            System.out.println("Exception occurred: " + ex.getMessage());
+        }
+
+        return resultMap;
+    }
+
+    /**
+     * 나의 식물 읽기 (유저 id가 주어졌을 때 목록)
+     */
+    // http://localhost:8080/api/v1/plant-api/readMyPlant
+    @PostMapping(value="/readMyPlant")
+    public  List<UserPlantDto> readMyPlant(@RequestBody UserDto userDto) {
+        Map<String, String> resultMap = new HashMap<>();
+        List<UserPlantDto> userPlantDtoList = new ArrayList<>();
+
+        FirebaseService firebaseService = new FirebaseService();
+
+
+        try {
+            if (userDto.getId() == null){
+                resultMap.put("error", "no userId");
+                return userPlantDtoList;
+            }
+            userPlantDtoList = firebaseService.getPlantList(userDto.getId());
+            return userPlantDtoList;
+        } catch (Exception ex) {
+            System.out.println("Exception occurred: " + ex.getMessage());
+        }
+
+        return userPlantDtoList;
+    }
+
+    /**
+     * 나의 식물 수정
+     */
+    // http://localhost:8080/api/v1/plant-api/updateMyPlant
+    @PostMapping(value="/updateMyPlant")
+    public Map<String, String> updateMyPlant(@RequestBody UserPlantAddDto userPlantAddDto) {
+        Map<String, String> resultMap = new HashMap<>();
+
+        FirebaseService firebaseService = new FirebaseService();
+
+        try {
+            if (userPlantAddDto.getUserId() == null){
+                resultMap.put("error", "no UserId");
+                return resultMap;
+            }
+            if (userPlantAddDto.getId() == null){
+                // 부여된 식물 id가 없으면 임의로 부여
+                resultMap.put("error", "no plantId");
+            }
+            UserPlantDto userPlantDto = new UserPlantDto(userPlantAddDto.getId(), userPlantAddDto.getName(), userPlantAddDto.getMemo());
+            String res = firebaseService.updatePlant(userPlantAddDto.getUserId(), userPlantDto);
+            resultMap.put("result", "success");
+            resultMap.put("detail", res);
+        } catch (Exception ex) {
+            System.out.println("Exception occurred: " + ex.getMessage());
+        }
+
+        return resultMap;
+    }
+
+    /**
+     * 나의 식물 제거
+     */
+    // http://localhost:8080/api/v1/plant-api/deleteMyPlant
+    @PostMapping(value="/deleteMyPlant")
+    public Map<String, String> deleteMyPlant(@RequestBody UserPlantAddDto userPlantAddDto) {
+        Map<String, String> resultMap = new HashMap<>();
+
+        FirebaseService firebaseService = new FirebaseService();
+
+        try {
+            if (userPlantAddDto.getUserId() == null){
+                resultMap.put("error", "no UserId");
+                return resultMap;
+            }
+            if (userPlantAddDto.getId() == null){
+                // 부여된 식물 id가 없으면 임의로 부여
+                resultMap.put("error", "no plantId");
+            }
+            String res = firebaseService.deletePlant(userPlantAddDto.getUserId(), userPlantAddDto.getId());
+            resultMap.put("result", "success");
+            resultMap.put("detail", res);
+        } catch (Exception ex) {
+            System.out.println("Exception occurred: " + ex.getMessage());
+        }
+
+        return resultMap;
     }
 
 
