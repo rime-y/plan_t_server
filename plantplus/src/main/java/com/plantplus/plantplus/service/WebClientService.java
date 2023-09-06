@@ -18,11 +18,9 @@ import java.util.List;
 @Service
 @Slf4j
 public class WebClientService {
-    @Value("${plantId.api.key}")
-    private String plantIdApiKey;
 
-    @Value("${nongsaro.api.key}")
-    private String nongsaroApiKey;
+    private final String plantIdApiKey = "5Aea6hLlJ5QlrfOq4Kaf4IuapVjPJfmzUTFdlhkbJSSyHtggw7";
+    private final String nongsaroApiKey = "20230621EUCNSZX5U0MEDLFWQCVFA";
 
     public String getTest() {
         WebClient webClient = WebClient.builder()

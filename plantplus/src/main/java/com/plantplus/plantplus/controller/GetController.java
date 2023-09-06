@@ -12,4 +12,9 @@ public class GetController {
     public String getNoV(){
         return "getNoVariable";
     }
+
+    @GetMapping(value = "/test")
+    public String test(){
+        return "connected";
+    }
 }
