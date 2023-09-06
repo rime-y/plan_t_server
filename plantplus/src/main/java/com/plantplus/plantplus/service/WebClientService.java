@@ -274,7 +274,7 @@ public class WebClientService {
 
         return res;
     }
-    public ResponseEntity<String> getPlantSearch(String plantName) {
+    public ResponseEntity<String> getPlantSearch(String plantName, String lang) {
         // 농사로 실내정원용 식물 정보 검색
         WebClient webClient = WebClient.builder()
                 .baseUrl("http://api.nongsaro.go.kr/service/garden")
@@ -285,6 +285,11 @@ public class WebClientService {
                 })
                 .build();
 
+        String st = "sPlntbneNm";
+        if (lang == "ko") st = "sCntntsSj";
+        else if (lang == "en") st = "sPlntzrNm";
+        final String sType = st;
+
 
         ResponseEntity<String> res = null;
 
@@ -293,7 +298,7 @@ public class WebClientService {
             res = webClient.get()
                     .uri(uriBuilder -> uriBuilder.path("/gardenList")
                             .queryParam("apiKey", nongsaroApiKey)
-                            .queryParam("sType", "sPlntbneNm")  // 영명
+                            .queryParam("sType", sType)  // 영명
                             .queryParam("sText", plantName)
                             .build())
                     .retrieve()

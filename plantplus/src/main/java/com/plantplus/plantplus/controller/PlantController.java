@@ -68,12 +68,12 @@ public class PlantController {
         if (plantRes != null ){
             // 세부정보 받아오기
             System.out.println("plantRes: "+plantRes);
-            plantInfoMap = plantService.getPlantInfo(plantRes, webClientService);
+            plantInfoMap = plantService.getPlantInfo(plantRes, webClientService, "sc");
         } else {
             log.info("plantRes null");
         }
 
-        if (!plantInfoMap.isEmpty()){
+        if (plantInfoMap != null ){
             // 정리
             plantInfoResMap = plantService.orgPlantInfoMap(plantInfoMap);
             System.out.println("plantInfoResMap "+plantInfoResMap.get("plantName"));
@@ -118,7 +118,7 @@ public class PlantController {
         if (plantRes != null){
             // 세부정보 받아오기
             System.out.println("plantRes: "+plantRes);
-            plantInfoMap = plantService.getPlantInfo(plantRes, webClientService);
+            plantInfoMap = plantService.getPlantInfo(plantRes, webClientService, "sc");
         } else {
             log.info("plantRes null");
         }
@@ -174,12 +174,12 @@ public class PlantController {
         if (plantRes != null ){
             // 세부정보 받아오기
             System.out.println("plantRes: "+plantRes);
-            plantInfoMap = plantService.getPlantInfo(plantRes, webClientService);
+            plantInfoMap = plantService.getPlantInfo(plantRes, webClientService, "ko");
         } else {
             log.info("plantRes null");
         }
 
-        if (!plantInfoMap.isEmpty()){
+        if (plantInfoMap != null){
             // 정리
             plantInfoResMap = plantService.orgPlantInfoMap(plantInfoMap);
             System.out.println("plantInfoResMap "+plantInfoResMap.get("plantName"));

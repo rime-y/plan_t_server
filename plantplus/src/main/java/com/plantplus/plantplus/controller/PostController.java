@@ -103,7 +103,7 @@ public class PostController {
 
         if (plantRes != null ){
             System.out.println("plantRes: "+plantRes);
-            plantInfoMap = plantService.getPlantInfo(plantRes, webClientService);
+            plantInfoMap = plantService.getPlantInfo(plantRes, webClientService, "sc");
             //log.info("plantInfoRes: ", plantInfoMap.get("plntbneNm"));
         } else {
             log.info("plantRes null");

@@ -19,15 +19,15 @@ public class PlantInfoService {
 
     private Map<String, String> plantInfo;
 
-    public PlantInfoService(String plantName, WebClientService webClientService){
+    public PlantInfoService(String plantName, WebClientService webClientService, String lang){
         this.webClientService = webClientService;
         setPlantNameEng(plantName);
 
-        calPlantNameKor();
+        calPlantNameKor(lang);
         calPlantInfoList();
     }
-    private void calPlantNameKor(){
-        ResponseEntity<String> res = webClientService.getPlantSearch(plantNameEng);
+    private void calPlantNameKor(String lang){
+        ResponseEntity<String> res = webClientService.getPlantSearch(plantNameEng, lang);
 
         DomService domService = new DomService();
         domService.readDom(res.getBody());
@@ -43,6 +43,7 @@ public class PlantInfoService {
             setSearched(Boolean.FALSE);
         }
     }
+
 
     private void calPlantInfoList(){
         ResponseEntity<String> res = webClientService.getPlantInfo(plantNum);

@@ -8,8 +8,8 @@ public class PlantService {
 
     // webclient와 plant 이름 전달 받은 후
     // 한명 / 세부 정보 불러옴
-    public Map<String, String> getPlantInfo(String name, WebClientService webClientService){
-        PlantInfoService plantInfoService = new PlantInfoService(name, webClientService);
+    public Map<String, String> getPlantInfo(String name, WebClientService webClientService, String lang){
+        PlantInfoService plantInfoService = new PlantInfoService(name, webClientService, lang);
         String res = "";
         Map<String, String> result = null;
         String plntNmKr = "";

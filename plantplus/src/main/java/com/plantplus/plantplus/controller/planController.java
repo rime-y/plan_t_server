@@ -58,7 +58,7 @@ public class planController {
         String result = "No Result";
 
         plantName = "rose";
-        ResponseEntity<String> res = webClientService.getPlantSearch(plantName);
+        ResponseEntity<String> res = webClientService.getPlantSearch(plantName, "en");
 
         DomService domService = new DomService();
         domService.readDom(res.getBody());
@@ -81,7 +81,7 @@ public class planController {
     @GetMapping("/getPlantSearchTest")
     // http://localhost:8080/api/v1/getPlantSearchTest
     public String PlantSearchTest(@RequestParam String name){
-        PlantInfoService plantInfoService = new PlantInfoService(name, webClientService);
+        PlantInfoService plantInfoService = new PlantInfoService(name, webClientService, "en");
         String res = "";
 
         if (plantInfoService.getSearched() && (plantInfoService.getPlantNameKor() != null)){
