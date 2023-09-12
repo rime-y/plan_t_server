@@ -201,6 +201,7 @@ public class WebClientService {
 
         PlantPhotoDto plantPhotoDto = new PlantPhotoDto();
         plantPhotoDto.setImages(img);
+        plantPhotoDto.setLanguage("ko");
         plantPhotoDto.setDisease_details(defaultDetailSettings);
         // log.info(plantPhotoDto.getImages().toString());
 
@@ -229,35 +230,37 @@ public class WebClientService {
 
             // Handle other exceptions, if needed
         }
-
+        System.out.println("detail language "+res.getBody().getHealth_assessment().getDiseases().get(0).getDisease_details().getLanguage());
         return res;
     }
-    public ResponseEntity<PlantPhotoResTestDto> postPlantHealthImageTest(List<String> img) {
-        // 건강 판별
+
+    public ResponseEntity<PlantPhotoHealthResV3Dto> postPlantHealthImageV3(List<String> img) {
+        // 건강 판별 - 한국어로 받아오기 위한 v3 버전
         WebClient webClient = WebClient.builder()
-                .baseUrl("https://api.plant.id/v2")
+                .baseUrl("https://plant.id/api/v3")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
 
 
-        PlantPhotoDto plantPhotoDto = new PlantPhotoDto();
+        PlantPhotoV3ReqDto plantPhotoDto = new PlantPhotoV3ReqDto();
         plantPhotoDto.setImages(img);
-        // log.info(plantPhotoDto.getImages().toString());
 
-        ResponseEntity<PlantPhotoResTestDto> res = null;
+        ResponseEntity<PlantPhotoHealthResV3Dto> res = null;
 
         try {
             res = webClient.post()
                     .uri(uriBuilder -> uriBuilder.path("/health_assessment")
+                            .queryParam("language", "ko")
+                            .queryParam("details", "local_name,description,url,treatment,classification,common_names,cause")
                             .build())
                     .bodyValue(plantPhotoDto)
                     .header("Api-Key", plantIdApiKey)
                     .retrieve()
-                    .toEntity(PlantPhotoResTestDto.class)
+                    .toEntity(PlantPhotoHealthResV3Dto.class)
                     .block();
         } catch (WebClientResponseException.BadRequest ex) {
             String responseBody = ex.getResponseBodyAsString();
-            System.out.println("Bad Request Error: " + responseBody);
+            System.out.println("2Bad Request Error: " + responseBody);
             log.info("Bad Request Error: " + responseBody);
             // Handle the specific error based on the response body or other information
         } catch (WebClientResponseException ex) {
@@ -269,9 +272,11 @@ public class WebClientService {
 
             // Handle other exceptions, if needed
         }
-
+        System.out.println("detail language "+res.getBody().getResult().getDisease().getSuggestions().get(0).getDetails().getLocal_name());
         return res;
     }
+
+
     public ResponseEntity<String> getPlantSearch(String plantName, String lang) {
         // 농사로 실내정원용 식물 정보 검색
         WebClient webClient = WebClient.builder()

@@ -1,6 +1,7 @@
 package com.plantplus.plantplus.service;
 
 import com.plantplus.plantplus.dto.plantPhoto.PlantPhotoHealthResDto;
+import com.plantplus.plantplus.dto.plantPhoto.PlantPhotoHealthResV3Dto;
 
 import java.util.*;
 
@@ -185,6 +186,89 @@ public class PlantService {
             if (pvList != null && pvList.size() > 0) {
                 target = pvList.get(0);
                 resMap.put(labelMap.get(label), translateTemp(target));
+                cnt++;
+            }
+        }
+
+        return resMap;
+    }
+
+    // 건강 종류 정리해서 메시지 용으로 깔끔하게 전달(Map 형태) / V3
+    public Map<String, String> orgPlantHealthMapV3(String name, PlantPhotoHealthResV3Dto data){
+        Map<String, String> resMap = new HashMap<>();
+
+        Map<String, String> labelMap = new HashMap<>(){{
+            put("plantName", "식물 명");
+            put("is_plant", "식물 여부");
+            put("is_healthy", "건강 여부");
+            put("local_name", "이름");
+            put("description", "설명");
+            put("prevention", "예방 방법");
+        }};
+
+        // 내부 요소들 순서대로
+        List<String> labelList = Arrays.asList(
+                "plantName",
+                "is_plant",
+                "is_healthy",
+                "local_name",
+                "description",
+                "prevention"
+        );
+
+        String target = name;
+        Boolean targetBl = false;
+        Integer cnt = 0; String label = labelList.get(cnt);
+
+        // plantName
+        resMap.put(labelMap.get(label), name);
+        cnt++;
+
+        // isPlant
+        label = labelList.get(cnt);
+        targetBl = data.getResult().getIs_plant().getBinary();
+        if (targetBl){
+            resMap.put(labelMap.get(label), "식물입니다.");
+        } else {
+            resMap.put(labelMap.get(label), "식물이 아닙니다.");
+            return resMap;
+        }
+        cnt++;
+
+        // is_healthy
+        label = labelList.get(cnt);
+        targetBl = data.getResult().getIs_healthy().getBinary();
+        if (targetBl){
+            resMap.put(labelMap.get(label), "건강합니다.");
+            return resMap;
+        } else {
+            resMap.put(labelMap.get(label), "건강에 이상이 있습니다.");
+        }
+        cnt++;
+
+        // disease Details
+        List<PlantPhotoHealthResV3Dto.Result.Disease.Suggestions> dDs = data.getResult().getDisease().getSuggestions();
+        if (dDs != null && dDs.size() > 0) {
+            PlantPhotoHealthResV3Dto.Result.Disease.Suggestions dDt = dDs.get(0);
+
+            // local_name
+            label = labelList.get(cnt);
+            target = dDt.getDetails().getLocal_name();
+            resMap.put(labelMap.get(label), target);
+            cnt++;
+
+            // description
+            label = labelList.get(cnt);
+            target = dDt.getDetails().getDescription();
+            resMap.put(labelMap.get(label), target);
+            cnt++;
+
+            // prevention
+            label = labelList.get(cnt);
+            List<String> pvList = dDt.getDetails().getTreatment().getPrevention();
+            if (pvList != null && pvList.size() > 0) {
+                target = pvList.get(0);
+                resMap.put(labelMap.get(label), target);
                 cnt++;
             }
         }

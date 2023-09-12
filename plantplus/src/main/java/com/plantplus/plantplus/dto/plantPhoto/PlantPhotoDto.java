@@ -8,6 +8,7 @@ public class PlantPhotoDto {
     private List<String> images;
     private String latitude;
     private String longitude;
+    private String language;
     private String plant_details;
 
     // 건강 판별 시
@@ -49,4 +50,13 @@ public class PlantPhotoDto {
     public void setDisease_details(List<String> disease_details) {
         this.disease_details = disease_details;
     }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
 }
