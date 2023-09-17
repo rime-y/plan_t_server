@@ -93,7 +93,9 @@ public class FirebaseService {
 
     public List<UserPlantDto> getPlantList(String userId) throws Exception {
         Firestore firestore = FirestoreClient.getFirestore();
-        ApiFuture<QuerySnapshot> apiFuture = firestore.collection(COLLECTION_NAME).document(userId).collection(PLANT_COLLECTION_NAME).get();
+        ApiFuture<QuerySnapshot> apiFuture =
+                firestore.collection(COLLECTION_NAME).document(userId)
+                .collection(PLANT_COLLECTION_NAME).get();
 
         List<UserPlantDto> userPlantDtoListr = new ArrayList<>();
         for (QueryDocumentSnapshot document : apiFuture.get()){
@@ -111,10 +113,11 @@ public class FirebaseService {
         return userPlantDtoListr;
     }
 
-    public UserPlantDto getPlantDetail(String id) throws Exception {
+    public UserPlantDto getPlantDetail(String userId, String id) throws Exception {
         Firestore firestore = FirestoreClient.getFirestore();
         DocumentReference documentReference =
-                firestore.collection(COLLECTION_NAME).document(id);
+                firestore.collection(COLLECTION_NAME).document(userId)
+                        .collection(PLANT_COLLECTION_NAME).document(id);
         ApiFuture<DocumentSnapshot> apiFuture = documentReference.get();
         DocumentSnapshot documentSnapshot = apiFuture.get();
         UserPlantDto userPlantDto = null;
@@ -148,7 +151,10 @@ public class FirebaseService {
         return "Document id: "+id+" delete";
     }
 
-    // realtime
+
+
+
+    // realtime (안 씀)
     public void makeUser(){
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("server/saving-data/fireblog");

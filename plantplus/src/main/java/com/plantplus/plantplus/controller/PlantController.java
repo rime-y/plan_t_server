@@ -12,6 +12,8 @@ import com.plantplus.plantplus.dto.plantSearch.PlantSearchDto;
 import com.plantplus.plantplus.service.FirebaseService;
 import com.plantplus.plantplus.service.WebClientService;
 import com.plantplus.plantplus.service.PlantService;
+import com.plantplus.plantplus.util.UtilClass;
+import jdk.jshell.execution.Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -271,10 +273,7 @@ public class PlantController {
                 resultMap.put("error", "no plantId");
                 userPlantAddDto.setId(Long.toString(System.currentTimeMillis()));
             }
-            UserPlantDto userPlantDto = new UserPlantDto();
-            userPlantDto.setId(userPlantAddDto.getId());
-            userPlantDto.setName(userPlantAddDto.getName());
-            userPlantDto.setMemo(userPlantAddDto.getMemo());
+            UserPlantDto userPlantDto = new UserPlantDto(userPlantAddDto.getId(), userPlantAddDto.getName(), userPlantAddDto.getMemo(), UtilClass.getStringDate());
             String res = firebaseService.insertPlant(userPlantAddDto.getUserId(), userPlantDto);
             resultMap.put("result", "success");
             resultMap.put("detail", res);
@@ -312,6 +311,32 @@ public class PlantController {
     }
 
     /**
+     * 나의 식물 읽기 (유저 id와 memo id가 주어졌을 때 하나만)
+     */
+    // http://localhost:8080/api/v1/plant-api/readMyPlantDetail
+    @PostMapping(value="/readMyPlantDetail")
+    public  UserPlantDto readMyPlantDetail(@RequestBody UserPlantAddDto userPlantAddDto) {
+        Map<String, String> resultMap = new HashMap<>();
+        UserPlantDto userPlantDto = new UserPlantDto();
+
+        FirebaseService firebaseService = new FirebaseService();
+
+
+        try {
+            if (userPlantAddDto.getId() == null){
+                resultMap.put("error", "no userId");
+                return userPlantDto;
+            }
+            userPlantDto = firebaseService.getPlantDetail(userPlantAddDto.getUserId(), userPlantAddDto.getId());
+            return userPlantDto;
+        } catch (Exception ex) {
+            System.out.println("Exception occurred: " + ex.getMessage());
+        }
+
+        return userPlantDto;
+    }
+
+    /**
      * 나의 식물 수정
      */
     // http://localhost:8080/api/v1/plant-api/updateMyPlant
@@ -330,7 +355,7 @@ public class PlantController {
                 // 부여된 식물 id가 없으면 임의로 부여
                 resultMap.put("error", "no plantId");
             }
-            UserPlantDto userPlantDto = new UserPlantDto(userPlantAddDto.getId(), userPlantAddDto.getName(), userPlantAddDto.getMemo());
+            UserPlantDto userPlantDto = new UserPlantDto(userPlantAddDto.getId(), userPlantAddDto.getName(), userPlantAddDto.getMemo(), UtilClass.getStringDate());
             String res = firebaseService.updatePlant(userPlantAddDto.getUserId(), userPlantDto);
             resultMap.put("result", "success");
             resultMap.put("detail", res);
