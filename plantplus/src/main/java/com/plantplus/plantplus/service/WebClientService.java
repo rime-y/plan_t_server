@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class WebClientService {
 
-    private final String plantIdApiKey = "5Aea6hLlJ5QlrfOq4Kaf4IuapVjPJfmzUTFdlhkbJSSyHtggw7";
+    private final String plantIdApiKey = "0Y6FAmvRn7nYmJxO644dafh3fJeVin2GU5FAHjrbPZtm55pYUr";
     private final String nongsaroApiKey = "20230621EUCNSZX5U0MEDLFWQCVFA";
 
     public String getTest() {
