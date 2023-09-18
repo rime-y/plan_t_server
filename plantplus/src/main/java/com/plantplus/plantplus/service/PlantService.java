@@ -35,7 +35,7 @@ public class PlantService {
         Map<String, String> resMap = new HashMap<>();
 
         Map<String, String> labelMap = new HashMap<>(){{
-            put("plantName", "식물 명");
+            put("plantName", "식물명");
             put("plntbneNm", "학명");
             put("lighttdemanddoCodeNm", "요구 광도");
             put("postngplaceCodeNm", "배치 장소");
@@ -97,7 +97,7 @@ public class PlantService {
         for (String key : labelList){
             target = labelMap.get(key);
             if (key == "plantName"){
-                resString.add("검색하신 식물은 "+data.get(key)+"입니다.");
+                resString.add("이 식물은 "+data.get(key)+"입니다.");
             }
             if (data.containsKey(key)){
                 resString.add(target + ": " + data.get(key));

@@ -242,8 +242,8 @@ public class PlantController {
             // 정리
             plantInfoResMap = plantService.orgPlantInfoMap(plantInfoMap);
             System.out.println("plantInfoResMap "+plantInfoResMap.get("plantName"));
-            List<String> plantInfoResStr = plantService.orgPlantInfoString(plantInfoMap);
-            plantInfoResMap.put("설명", plantInfoResStr.get(0));
+            // List<String> plantInfoResStr = plantService.orgPlantInfoString(plantInfoMap);
+            // plantInfoResMap.put("설명", plantInfoResStr.get(0));
         } else {
             System.out.println("plantInfoResMap Empty");
         }
