@@ -42,10 +42,6 @@ public class planController {
     public String ImagePost(){
         List<String> images = new ArrayList<>();
 
-        //images[0] = image;
-        //images.add(img);
-
-       // ResponseEntity<PlantIdDto> res = webClientService.postPlantIdByIDMulti();
         ResponseEntity<PlantPhotoResDto> res = webClientService.postPlantImage(images);
 
         return res.toString();
@@ -72,10 +68,8 @@ public class planController {
             for (int i = 0; i < nodeList.size(); i++){
                 result += "(" + (i+1) +") "+nodeList.get(i).get("cntntsSj") + "\n";
             }
-          //log.info("node: ", nodeList.get(1), "item: ", nodeList.get(1).get("cntntsSj"));
         }
         return result;
-        //return res.getBody();
     }
 
     @GetMapping("/getPlantSearchTest")

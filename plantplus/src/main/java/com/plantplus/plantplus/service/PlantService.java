@@ -154,7 +154,6 @@ public class PlantService {
         targetBl = data.getHealth_assessment().getIs_healthy();
         if (targetBl){
             resMap.put(labelMap.get(label), "건강합니다.");
-            return resMap;
         } else {
             resMap.put(labelMap.get(label), "건강에 이상이 있습니다.");
         }
@@ -171,13 +170,13 @@ public class PlantService {
             // local_name
             label = labelList.get(cnt);
             target = dDt.getLocal_name();
-            resMap.put(labelMap.get(label), translateTemp(target));
+            resMap.put(labelMap.get(label), target);
             cnt++;
 
             // description
             label = labelList.get(cnt);
             target = dDt.getDescription();
-            resMap.put(labelMap.get(label), translateTemp(target));
+            resMap.put(labelMap.get(label), target);
             cnt++;
 
             // prevention
@@ -185,7 +184,7 @@ public class PlantService {
             List<String> pvList = dDt.getTreatment().getPrevention();
             if (pvList != null && pvList.size() > 0) {
                 target = pvList.get(0);
-                resMap.put(labelMap.get(label), translateTemp(target));
+                resMap.put(labelMap.get(label), target);
                 cnt++;
             }
         }
@@ -240,7 +239,6 @@ public class PlantService {
         targetBl = data.getResult().getIs_healthy().getBinary();
         if (targetBl){
             resMap.put(labelMap.get(label), "건강합니다.");
-            return resMap;
         } else {
             resMap.put(labelMap.get(label), "건강에 이상이 있습니다.");
         }
@@ -276,26 +274,4 @@ public class PlantService {
         return resMap;
     }
 
-    private String translateTemp(String target){
-        //임시로 번역
-        Map<String, String> transMap = new HashMap<>();
-
-        // 병명
-        transMap.put("abiotic", "비생물적 장애");
-        transMap.put("water-related issue", "물 관련 문제");
-
-        // 설명
-        transMap.put("Abiotic disorders are caused by non-living factors - usually by unsuitable environmental conditions, such as drought stress, nutrient deficiency, improper watering, or planting conditions.", "이 장애는 일반적으로 가뭄 스트레스, 영양 결핍, 부적절한 물 공급 또는 재배 조건과 같은 부적절한 환경 조건과 같은 비생물적 요인으로 인해 발생합니다.");
-        transMap.put("Water-related abiotic issues refer to abiotic stresses caused by inadequate watering, including water excess, uneven watering, and water deficiency.", "물 관련 비생물학적 문제는 물 과잉, 고르지 않은 물 공급, 물 부족 등 부적절한 물 공급으로 인한 비생물학적 스트레스를 의미합니다.");
-
-
-        if (transMap.containsKey(target)){
-            System.out.println("exist "+transMap.get(target));
-            return transMap.get(target);
-        }
-        else {
-            System.out.println("not "+target);
-            return target;
-        }
-    }
 }

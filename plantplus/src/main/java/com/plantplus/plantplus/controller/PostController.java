@@ -30,8 +30,6 @@ public class PostController {
 
     @PostMapping(value="/test")
     public String test(@RequestBody PlantPhotoPostDto plantPhotoPostDto){
-        log.info("asdfasdf");
-        log.info("plantPhotoPostDto", plantPhotoPostDto.getImages().toString());
         return plantPhotoPostDto.toString();
     }
 
@@ -41,15 +39,12 @@ public class PostController {
         // 사진 업로드 (종류 판별)
         List<String> images = new ArrayList<>();
         images.add(plantPhotoDto.getImages());
-        log.error("test");
-        log.info("plantPhotoPostDto", plantPhotoDto.getImages().length());
 
         ResponseEntity<PlantPhotoResDto> res = webClientService.postPlantImage(images);
         if (res == null){
             return "null";
         }
         return res.getBody().getId().toString();
-        //return plantPhotoDto.toString();
     }
 
     // http://localhost:8080/api/v1/post-api/plantPhotoHealth
@@ -59,11 +54,8 @@ public class PostController {
         List<String> images = new ArrayList<>();
         String resString = "";
         images.add(plantPhotoDto.getImages());
-        log.error("test");
-        log.info("plantPhotoPostDto", images, plantPhotoDto.getImages().toString());
 
         ResponseEntity<PlantPhotoHealthResDto> res = webClientService.postPlantHealthImage(images);
-       // ResponseEntity<PlantPhotoResTestDto> res = webClientService.postPlantHealthImage(images);
 
         if (res != null){
             System.out.println("check: "+res.getBody().getId().toString());
@@ -71,7 +63,6 @@ public class PostController {
             resString = res.getBody().getHealth_assessment().getDiseases().get(0).getDisease_details().getUrl().toString();
         }
         return resString;
-        //return plantPhotoDto.toString();
     }
 
     // http://localhost:8080/api/v1/post-api/plantPhotoAndInfo
@@ -87,14 +78,12 @@ public class PostController {
         // 첫번째 suggestion의 결과를 택한다
         List<PlantPhotoResDto.PlantSuggestions> plantSuggestionsList = res.getBody().getSuggestions();
         String plantRes = "";
-        String plantInfo = "";
         Map<String, String> plantInfoMap = new HashMap<>();
         Map<String, String> plantInfoResMap = new HashMap<>();
 
         if (plantSuggestionsList.size() > 0){
             plantRes = plantSuggestionsList.get(0).getPlant_name();
             System.out.println(plantSuggestionsList.get(0).getPlant_name());
-            log.info("plantSuggestionsList ",plantSuggestionsList.get(0).toString());
         } else {
             System.out.println("plantSuggestionsList 0 "+plantSuggestionsList.size());
             plantRes = null;
@@ -104,7 +93,6 @@ public class PostController {
         if (plantRes != null ){
             System.out.println("plantRes: "+plantRes);
             plantInfoMap = plantService.getPlantInfo(plantRes, webClientService, "sc");
-            //log.info("plantInfoRes: ", plantInfoMap.get("plntbneNm"));
         } else {
             log.info("plantRes null");
         }
@@ -120,6 +108,5 @@ public class PostController {
 
 
         return plantInfoResMap;
-        //return plantPhotoDto.toString();
     }
 }

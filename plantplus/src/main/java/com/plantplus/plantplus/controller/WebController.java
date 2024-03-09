@@ -27,18 +27,9 @@ public class WebController {
         return res;
     }
 
-    @RequestMapping("/post")
-    public String testPost(){
-        ResponseEntity<TestDto> res = webClientService.postTestWithParamAndBody();
-
-        return res.toString();
-    }
-
     @GetMapping("/test")
     public String testgetFirebase(){
         FirebaseService firebaseService = new FirebaseService();
-        //firebaseService.readUser();
-
         try {
             UserDto userDto = new UserDto();
             userDto.setId("t1234");

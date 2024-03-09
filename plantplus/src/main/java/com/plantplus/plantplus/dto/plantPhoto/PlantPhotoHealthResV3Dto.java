@@ -5,7 +5,6 @@ import java.util.List;
 public class PlantPhotoHealthResV3Dto {
     // 서버 받아온 정보(건강 확인) - v3
 
-
     private String custom_id;
     private Input input;
     private Result result;
